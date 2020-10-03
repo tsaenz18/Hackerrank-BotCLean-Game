@@ -1,0 +1,74 @@
+# The goal of Artificial Intelligence is to create a rational agent 
+# (Artificial Intelligence 1.1.4). An agent gets input from the environment 
+# through sensors and acts on the environment with actuators. In this 
+# challenge, you will program a simple bot to perform the correct actions 
+# based on environmental input.
+
+# Meet the bot MarkZoid. It's a cleaning bot whose sensor is a head mounted 
+# camera and whose actuators are the wheels beneath it. It's used to clean the floor.
+
+# The bot here is positioned at the top left corner of a 5*5 grid. Your task 
+# is to move the bot to clean all the dirty cells.
+
+# Link: https://www.hackerrank.com/challenges/botclean
+# Developer: Tristan Saenz
+#Note: numpy not accepted in challenge
+
+# import library
+import math
+def next_move(posr, posc, board):
+    d_cells = []  
+    distances = []
+    for i in range(5):
+        for j in range(5):
+            if board[i][j] == "d":
+                d_row = i
+                d_col = j
+                cell = i, j
+                d_cells.append(cell)
+    
+    #find closest dirty cell
+    for i in range(len(d_cells)):
+        d = distance(posr, posc, d_cells[i])
+        distances.append(d)
+    closest = min(distances)
+    next_move = distances.index(closest)
+    target_cell = d_cells[next_move]
+    
+    #clean if bot on dirty cell
+    #identify which direction to move next
+    #update position
+    x, y = target_cell
+    horz = y - posc
+    vert = x - posc
+    if board[posr][posc] == "d":
+        print("CLEAN")
+        for n, i in enumerate(board):
+            if board[x][y] == "d":
+                board[x][y] = "-"
+    elif vert > 0 and abs(vert) > abs(horz):
+        print("DOWN")
+        posc += 1
+    elif vert < 0 and abs(vert) > abs(horz):
+        print("UP")
+        posc -= 1
+    elif horz > 0 and abs(horz) > abs(vert):
+        print("RIGHT")
+        posr += 1
+    elif horz < 0 and abs(horz) > abs(vert):
+        print("LEFT")
+        posr -= 1
+     
+    #update/return board positons
+    return posr, posc, board
+        
+def distance(posr, posc, cell):
+    x, y = cell
+    return math.sqrt((x - posr)**2 +(y - posc)**2)
+
+# Tail starts here
+
+if __name__ == "__main__":
+    pos = [int(i) for i in input().strip().split()]
+    board = [[j for j in input().strip()] for i in range(5)]
+    next_move(pos[0], pos[1], board)
